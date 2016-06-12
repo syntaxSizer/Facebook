@@ -1,5 +1,6 @@
 package matrial.aka.facebook;
 
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -18,15 +20,15 @@ import com.facebook.login.widget.LoginButton;
 
 import org.json.JSONObject;
 
-/**
- * Created by geckozila on 12/06/16.
- */
-public class LoginActivity extends Activity {
+import matrial.aka.facebook.LogoutActivity;
+import matrial.aka.facebook.PrefUtils;
+import matrial.aka.facebook.User;
 
+public class LoginActivity extends Activity {
     private CallbackManager callbackManager;
-    private LoginButton loginbutton;
+    private LoginButton loginButton;
     private TextView btnLogin;
-    private ProgressDialog didi;
+    private ProgressDialog progressDialog;
     User user;
 
     @Override
@@ -35,84 +37,109 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         if(PrefUtils.getCurrentUser(LoginActivity.this) != null){
-            Intent homeIntent = new Intent(LoginActivity.this,LogoutActivity.class);
+
+            Intent homeIntent = new Intent(LoginActivity.this, LogoutActivity.class);
+
             startActivity(homeIntent);
+
             finish();
         }
+    }
 
-     }
     @Override
-    protected void OnResume(){
+    protected void onResume() {
         super.onResume();
 
 
-        callbackManager = CallbackManager.Factory.create();
+        callbackManager=CallbackManager.Factory.create();
 
-        loginbutton = (LoginButton) findViewById(R.id.Login_button);
-        loginbutton.setPublishPermissions("public_profile","email","user_friends");
-      btnLogin =(TextView) findViewById(R.id.btnLogin);
-        btnLogin.setOnClickListener(new View.OnClickListener(){
+        loginButton= (LoginButton)findViewById(R.id.login_button);
 
+        loginButton.setReadPermissions("public_profile", "email","user_friends");
+
+        btnLogin= (TextView) findViewById(R.id.btnLogin);
+        btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //A dialog showing a progress indicator and an optional text
-                // message or view. Only a text message or a view
-                // can be used at the same time.
 
-                didi = new ProgressDialog(LoginActivity.this);
-                didi.setMessage("SKYNET Reloading...");
-                didi.show();
+                progressDialog = new ProgressDialog(LoginActivity.this);
+                progressDialog.setMessage("Loading...");
+                progressDialog.show();
 
-                loginbutton.setPressed(true);
-                // invalidate function used to kill the session after redirection
-                loginbutton.invalidate();
-                loginbutton.registerCallback(callbackManager, mCallback);
+                loginButton.performClick();
 
-                loginbutton.setPressed(false);
-                loginbutton.invalidate();
+                loginButton.setPressed(true);
+
+                loginButton.invalidate();
+
+                loginButton.registerCallback(callbackManager, mCallBack);
+
+                loginButton.setPressed(false);
+
+                loginButton.invalidate();
+
             }
         });
-
     }
+
     @Override
-    protected void onActivityResult(int requestCode , int resultCode, Intent data){
-        super.onActivityResult(requestCode, resultCode,data);
-        callbackManager.onActivityResult(requestCode,resultCode,data);
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
 
-    private FacebookCallback<LoginResult>mCallback=new FacebookCallback<LoginResult>() {
+    private FacebookCallback<LoginResult> mCallBack = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
-didi.dismiss();
-            //app code
-            // getting user data
-            GraphRequest request= GraphRequest.newMeRequest();
-            loginResult.getAccessToken();
-            new GraphRequest.GraphJSONObjectCallback(){
 
-                @Override
-                public void onCompleted(JSONObject object, GraphResponse response) {
-                    Log.e("resoponse", "response" + "");
-                    try{
+            progressDialog.dismiss();
 
-                    }
-                    catch(){
+            // App code
+            GraphRequest request = GraphRequest.newMeRequest(
+                    loginResult.getAccessToken(),
+                    new GraphRequest.GraphJSONObjectCallback() {
+                        @Override
+                        public void onCompleted(
+                                JSONObject object,
+                                GraphResponse response) {
 
-                    }
+                            Log.e("response: ", response + "");
+                            try {
+                                user = new User();
+                                user.getFacebookID();
+                                user.getEmail();
+                                user.getName();
+                                user.getGender();
+                                PrefUtils.setCurrentUser(user,LoginActivity.this);
 
-                }
-            }
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                            Toast.makeText(LoginActivity.this,"welcome "+user.getName(),Toast.LENGTH_LONG).show();
+                            Intent intent=new Intent(LoginActivity.this,LogoutActivity.class);
+                            startActivity(intent);
+                            finish();
+
+                        }
+
+                    });
+
+            Bundle parameters = new Bundle();
+            parameters.putString("fields", "id,name,email,gender, birthday");
+            request.setParameters(parameters);
+            request.executeAsync();
         }
 
         @Override
         public void onCancel() {
-
+            progressDialog.dismiss();
         }
 
         @Override
-        public void onError(FacebookException error) {
-
+        public void onError(FacebookException e) {
+            progressDialog.dismiss();
         }
-    }
+    };
+
 }

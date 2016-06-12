@@ -8,17 +8,34 @@ import com.google.gson.annotations.SerializedName;
  */
 public class User {
 
-    @SerializedName("name")
-    private String mName;
+   @SerializedName("name")
+    public String mName;
 
-    @SerializedName("email")
-    private String mEmail;
+   @SerializedName("email")
+    public String mEmail;
     @SerializedName("facebookID")
-    private int mFacebookID;
+    public String mFacebookID;
     @SerializedName("gender")
-    private String mGender;
+    public String mGender;
 
 
+    public String getName() {
+        return mName;
+    }
+
+    public String getEmail() {
+        return mEmail;
+    }
+
+    public String getFacebookID() {
+        return mFacebookID;
+    }
+
+    public String getGender() {
+        return mGender;
+    }
 }
+
+
 
 
