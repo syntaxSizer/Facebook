@@ -10,7 +10,26 @@
     tools:context="matrial.aka.facebook.MainActivity">
 
     <TextView
+        android:text="Login with Face book"
+        android:id="@+id/btnLogin"
+        android:padding="16dp"
+        android:layout_centerInParent="true"
+        android:background="#222"
+        android:textColor="#fff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+     <com.facebook.login.widget.LoginButton
+         android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="LogMEIN"
+        android:id="@+id/Login_button"
+        android:layout_centerVertical="true"
+        android:backgroundTint="#222"
+        android:textColor="#fff"
+         android:gravity="center_horizontal"
+         android:layout_marginTop="30dp"
+         android:layout_marginBottom="30"/>
 </RelativeLayout>

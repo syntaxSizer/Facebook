@@ -15,8 +15,10 @@
         android:theme="@style/AppTheme">
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
 
-
+        <!--the configChange is simply allow you to customise the mentioned features instead of
+        the default  once  declered you need to provied the layout somewhere in the app-->
         <activity android:name="com.facebook.FacebookActivity"
+
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:label="@string/app_name" />
