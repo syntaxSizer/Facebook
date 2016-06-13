@@ -16,22 +16,19 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-/**
- * Created by geckozila on 12/06/16.
- */
+
 public class LogoutActivity extends Activity {
 
     private TextView btnLogout;
     private User user;
     private ImageView profileImage;
     Bitmap bitmap;
-
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logout);
         user=PrefUtils.getCurrentUser(LogoutActivity.this);
         profileImage= (ImageView) findViewById(R.id.profileImage);
-
 
         // fetching facebook's profile picture
         new AsyncTask<Void,Void,Void>(){
@@ -51,6 +48,7 @@ public class LogoutActivity extends Activity {
                 }
                 return null;
             }
+
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
@@ -76,6 +74,5 @@ public class LogoutActivity extends Activity {
             }
         });
     }
-
 
 }

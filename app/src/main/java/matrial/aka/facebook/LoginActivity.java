@@ -20,10 +20,6 @@ import com.facebook.login.widget.LoginButton;
 
 import org.json.JSONObject;
 
-import matrial.aka.facebook.LogoutActivity;
-import matrial.aka.facebook.PrefUtils;
-import matrial.aka.facebook.User;
-
 public class LoginActivity extends Activity {
     private CallbackManager callbackManager;
     private LoginButton loginButton;
@@ -64,6 +60,7 @@ public class LoginActivity extends Activity {
 
                 progressDialog = new ProgressDialog(LoginActivity.this);
                 progressDialog.setMessage("Loading...");
+
                 progressDialog.show();
 
                 loginButton.performClick();
